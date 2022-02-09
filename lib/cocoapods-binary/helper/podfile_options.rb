@@ -4,6 +4,15 @@ module Pod
         def self.keyword
             :binary
         end
+
+        def self.customBuildOptionsKeyword
+            :custom_build_option
+        end
+
+        @@buildOptions = {}
+        def self.customBuildOptions
+            @@buildOptions
+        end
     end
 
     class Podfile
@@ -16,6 +25,13 @@ module Pod
             options = requirements.last
             if options.is_a?(Hash) && options[Pod::Prebuild.keyword] != nil 
                 should_prebuild = options.delete(Pod::Prebuild.keyword)
+                requirements.pop if options.empty?
+            end
+
+            if options.is_a?(Hash) && options[Pod::Prebuild.customBuildOptionsKeyword] != nil 
+                option = options[Pod::Prebuild.customBuildOptionsKeyword]
+                Pod::Prebuild.customBuildOptions[name] = option
+                options.delete(Pod::Prebuild.customBuildOptionsKeyword)
                 requirements.pop if options.empty?
             end
     

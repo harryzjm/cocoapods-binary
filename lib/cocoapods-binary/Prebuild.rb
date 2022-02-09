@@ -126,7 +126,8 @@ module Pod
                     .map(&:deployment_target)
                     .max
 
-                Pod::Prebuild.build(sandbox_path, target, min_deployment_target, output_path, bitcode_enabled,  Podfile::DSL.custom_build_options,  Podfile::DSL.custom_build_options_simulator)
+                option = Pod::Prebuild.customBuildOptions[target.name] || ""
+                Pod::Prebuild.build(sandbox_path, target, min_deployment_target, output_path, bitcode_enabled,  Podfile::DSL.custom_build_options + [option],  Podfile::DSL.custom_build_options_simulator + [option])
 
                 # save the resource paths for later installing
                 if target.static_framework? and !target.resource_paths.empty?
